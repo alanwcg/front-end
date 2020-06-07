@@ -21,16 +21,6 @@ export default [
     title: 'Menu',
     pages: [
       {
-        title: 'Lojas',
-        href: '/store',
-        icon: AssignmentIndOutlinedIcon
-      },
-      {
-        title: 'Cupons',
-        href: '/coupon',
-        icon: PlaceIcon
-      },
-      {
         title: 'Pessoas',
         href: '/person',
         icon: PeopleAltOutlinedIcon

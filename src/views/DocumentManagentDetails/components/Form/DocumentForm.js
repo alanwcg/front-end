@@ -22,7 +22,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: 570
+    height: 400
   },
   formGroup: {
     marginBottom: theme.spacing(3)
@@ -61,33 +61,27 @@ const schema = {
 const options = [
   {
     value: 'txt',
-    label: '.txt'
+    label: 'txt'
   },
   {
-    value: 'html',
-    label: '.html'
+    value: 'pdf',
+    label: 'pdf'
   },
   {
-    value: 'css',
-    label: '.css'
-  },
-  {
-    value: 'js',
-    label: '.js'
-  },
-  {
-    value: 'java',
-    label: '.java'
+    value: 'docx',
+    label: 'docx'
   },
   {
     value: 'png',
-    label: '.png'
+    label: 'png'
   },
   {
     value: 'jpeg',
-    label: '.jpeg'
+    label: 'jpeg'
   },
 ];
+
+var file;
 
 const DocumentForm = props => {
   const { document, onSubmit, className, ...rest } = props;
@@ -130,7 +124,7 @@ const DocumentForm = props => {
     }));
   };
 
-  const handleTypeChange =  async option => {
+  const handleTypeChange = async option => {
     setFormState(formState => ({
       ...formState,
       values: {
@@ -146,32 +140,51 @@ const DocumentForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    file = null;
     onSubmit(formState.values);
   };
 
-  const onDrop = useCallback(files => {
+  const onDrop = useCallback(acceptedFiles => {
     const data = new FormData();
-    data.append('file', files[0]);
+    data.append('file', acceptedFiles[0]);
+
+    console.log(acceptedFiles);
+
     axios({
       method: 'POST',
-      url: '/api/v1/document/new',
+      url: '/api/v1/document/upload',
       data: data
     })
-      .then(response => {
-        setFormState(formState => ({
-          ...formState,
-          values: {
-            ...formState.values,
-            thumbnail: response.data
-          },
-          touched: {
-            ...formState.touched,
-            thumbnail: true
-          }
-        }));
-      }).catch((error) => {
-      });
-  }, [])
+    .then(response => {
+      setFormState(formState => ({
+        ...formState,
+        values: {
+          ...formState.values,
+          doc: response.data
+        },
+        touched: {
+          ...formState.touched,
+          thumbnail: true
+        }
+      }));
+    }).catch((error) => {
+    });
+
+    file = acceptedFiles[0].name;
+    const path = file;
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        directory: path
+      },
+      touched: {
+        ...formState.touched,
+        thumbnail: true
+      }
+    }))
+  }, []);
+
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const hasError = field =>
@@ -179,29 +192,20 @@ const DocumentForm = props => {
 
   return (
     <form
-        {...rest}
-        className={clsx(classes.root, className)}
-        onSubmit={handleSubmit}
-      >
+      {...rest}
+      className={clsx(classes.root, className)}
+      onSubmit={handleSubmit}
+    >
       <Card
         {...rest}
         className={clsx(classes.root, className)}>
         <CardHeader title="Dados do documento" action={<Switch
-            checked={formState.values.active}
-            onChange={handleChange}
-            name="active"
-            inputProps={{ 'aria-label': 'secondary checkbox' }}
-          />} />
+          checked={formState.values.active}
+          onChange={handleChange}
+          name="active"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />} />
         <CardContent>
-          <div className={classes.formGroup}>
-            <div {...getRootProps({ refKey: 'innerRef' })} className={classes.avatar}>
-              <Avatar 
-                className={classes.avatar}
-                src={formState.values.thumbnail ? formState.values.thumbnail.uri : ''}
-              />
-            </div>
-           <input {...getInputProps()} />
-          </div>
           <div className={classes.formGroup}>
             <TextField
               size="small"
@@ -213,11 +217,11 @@ const DocumentForm = props => {
               label="Nome"
               onChange={handleChange}
               name="fullName"
-              value={formState.values.fullName}
+              //value={formState.values.fullName}
               variant="outlined"
             />
-          </div>   
-          
+          </div>
+
           <div className={classes.formGroup}>
             <Select
               size="small"
@@ -232,17 +236,24 @@ const DocumentForm = props => {
           {/* <div className={classes.formGroup}>
             <TextField
               size="small"
-              className={classes.textField}
               fullWidth
-              error={hasError('documentType')}
-              helperText={hasError('documentType') ? formState.errors.documentType[0] : null}
-              label="Tipo"
-              name="documentType"
+              className={classes.textField}
+              error={hasError('directory')}
+              helperText={hasError('directory') ? formState.errors.directory[0] : null}
+              label="Diretório"
               onChange={handleChange}
-              value={formState.values.documentType.displayName}
+              name="directory"
+              //value={formState.values.directory}
               variant="outlined"
             />
           </div> */}
+
+          <div className={classes.formGroup}>
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              <p>{file ? file : "Drag 'n' drop some files here, or click to select files"}</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
       <div className={classes.actions}>

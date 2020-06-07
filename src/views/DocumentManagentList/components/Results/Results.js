@@ -29,7 +29,8 @@ import getInitials from 'utils/getInitials';
 import { TableToolbar } from 'components';
 import Moment from 'react-moment';
 import IconButton from '@material-ui/core/IconButton';
-import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
+import GetAppOutlinedIcon from '@material-ui/icons/GetAppOutlined';
+import axios from 'utils/axios';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -53,8 +54,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   },
   active: {
-    borderLeftWidth: 2, 
-    borderLeftStyle: 'solid', 
+    borderLeftWidth: 2,
+    borderLeftStyle: 'solid',
     borderLeftColor: palette.green
   }
 }));
@@ -195,16 +196,16 @@ const Results = props => {
                     </TableCell>
                     <TableCell>
                       <TableSortLabel>
-                        Atualizar
+                        Download
                       </TableSortLabel>
                     </TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                { isLoading && Array(size).fill(size).map((key, index) => (
+                  {isLoading && Array(size).fill(size).map((key, index) => (
                     <TableRow key={index}>
-                      <TableCell padding="checkbox"/>
+                      <TableCell padding="checkbox" />
                       <TableCell>
                         <div className={classes.nameCell}>
                           <Skeleton variant="circle" className={classes.avatar} />
@@ -271,7 +272,7 @@ const Results = props => {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{document.documentType.displayType}</TableCell>
+                      <TableCell>{document.documentType.name}</TableCell>
                       <TableCell>{document.enabled === true ? "Sim" : "Não"}</TableCell>
                       <TableCell>{document.locked === true ? "Sim" : "Não"}</TableCell>
                       <TableCell>
@@ -287,13 +288,16 @@ const Results = props => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          aria-label="atualizar"
-                          component={RouterLink}
-                          to={`/document/new/${document.id}`}
+                        <a
+                          href={`localhost:8084/api/v1/document/download?file=${document.directory}`}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          download={document.fullName}
                         >
-                          <UpdateOutlinedIcon />
-                        </IconButton>
+                          <IconButton aria-label="download">
+                            <GetAppOutlinedIcon />
+                          </IconButton>
+                        </a>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -305,7 +309,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
-            labelDisplayedRows={({from, to, count, page}) => `${from}-${to} de ${count}`}
+            labelDisplayedRows={({ from, to, count, page }) => `${from}-${to} de ${count}`}
             labelRowsPerPage="Linhas por página:"
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}

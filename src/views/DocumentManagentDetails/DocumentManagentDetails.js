@@ -37,7 +37,9 @@ const DocumentManagentDetails = () => {
 
   const initialValues = {
     fullName: '',
-    personType: '',
+    documentType: '',
+    directory: '',
+    doc: null,
     thumbnail: null
   };
 
@@ -79,8 +81,8 @@ const DocumentManagentDetails = () => {
     setLoading(true);
     //document.thumbnail = document.thumbnail !== undefined ? document.thumbnail.key : null;
     axios({
-      method: document.id ? 'PUT' : 'POST',
-      url: '/api/v1/document' + (document.id ? `/${document.id}` : ''),
+      method: 'POST',
+      url: '/api/v1/document',
       data: document
     }).then(response => {
       setDocument(response.data);

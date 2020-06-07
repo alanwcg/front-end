@@ -6,12 +6,12 @@ import { Redirect } from 'react-router-dom';
 import AuthLayout from './layouts/Auth';
 import ErrorLayout from './layouts/Error';
 import DashboardLayout from './layouts/Dashboard';
-
+  
 const routes = [
   {
     path: '/',
     exact: true,
-    component: () => <Redirect to="/store" />
+    component: () => <Redirect to="/document" />
   },
   {
     path: '/auth',
@@ -56,34 +56,14 @@ const routes = [
     component: DashboardLayout,
     routes: [
       {
-        path: '/store',
+        path: '/document',
         exact: true,
-        component: lazy(() => import('views/StoreManagentList'))
+        component: lazy(() => import('views/DocumentManagentList'))
       },
       {
-        path: '/store/new',
+        path: '/document/new',
         exact: true,
-        component: lazy(() => import('views/StoreManagentDetails'))
-      },
-      {
-        path: '/store/:id',
-        exact: true,
-        component: lazy(() => import('views/StoreManagentDetails'))
-      },
-      {
-        path: '/coupon',
-        exact: true,
-        component: lazy(() => import('views/CouponManagentList'))
-      },
-      {
-        path: '/coupon/new',
-        exact: true,
-        component: lazy(() => import('views/CouponManagentDetails'))
-      },
-      {
-        path: '/coupon/:id',
-        exact: true,
-        component: lazy(() => import('views/CouponManagentDetails'))
+        component: lazy(() => import('views/DocumentManagentDetails'))
       },
       {
         path: '/person',
@@ -101,21 +81,6 @@ const routes = [
         component: lazy(() => import('views/PersonManagentDetails'))
       },
       {
-        path: '/document',
-        exact: true,
-        component: lazy(() => import('views/DocumentManagentList'))
-      },
-      {
-        path: '/document/new',
-        exact: true,
-        component: lazy(() => import('views/DocumentManagentDetails'))
-      },
-      {
-        path: '/document/new/:id',
-        exact: true,
-        component: lazy(() => import('views/DocumentManagentDetails'))
-      },
-      {
         path: '/server',
         exact: true,
         component: lazy(() => import('views/ServerManagentList'))
@@ -129,6 +94,10 @@ const routes = [
         path: '/server/new/:id',
         exact: true,
         component: lazy(() => import('views/ServerManagentDetails'))
+      },
+      {
+        path:'/public/docs',
+        exact: true
       },
       {
         component: () => <Redirect to="/errors/error-404" />

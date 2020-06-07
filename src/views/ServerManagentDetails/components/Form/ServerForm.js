@@ -71,7 +71,7 @@ const ServerForm = props => {
     errors: {}
   });
 
-  const history = useHistory();
+  //const history = useHistory();
 
   const classes = useStyles();
 
@@ -107,7 +107,7 @@ const ServerForm = props => {
   const handleSubmit = async event => {
     event.preventDefault();
     onSubmit(formState.values);
-    history.push('/server');
+    //history.push('/server');
   };
 
   const onDrop = useCallback(files => {
